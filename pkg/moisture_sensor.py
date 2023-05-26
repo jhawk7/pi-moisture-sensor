@@ -12,10 +12,10 @@ class Msensor:
 
   def get_moisture_readings(self):
     raw_reading = self.mpin.read_u16()
-    moisture_percentge = self.__map__(raw_reading)
+    moisture_percentge = self.__map(raw_reading)
     return moisture_percentge, raw_reading
 
-  def __map__(self, raw_reading):
+  def __map(self, raw_reading):
     # maps reading to a range specified by the min and max (inspired by map arduino func)
     # formula: (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     return (raw_reading - self.min_moisture) * (100-0) / (self.max_moisture - self.min_moisture) + 0
