@@ -15,8 +15,8 @@ pip install opentelemetry-sdk
 pip install opentelemetry-exporter-otlp-proto-grpc
 '''
 
-class Opentel
-  def __init__():
+class Opentel:
+  def __init__(self):
     self.service_name = str(os.getenv("SERVICE_NAME", "default_service"))
     self.exporter_endpoint = str(os.getenv("OPENTEL_EXPORTER_ENDPOINT", "0.0.0.0:4317"))
     self.__initTraceProvider()
