@@ -1,13 +1,13 @@
-from pkg.moisture_sensor import Msensor
+from pkg.moisture_sensor import ADCMsensor
 from pkg.water_pump import WaterPumpRelay
 from pkg.opentel import Opentel
 import time
 
 
 class Controller:
-  def __init__(self, msensor, pump, meter, ideal_moisture_level, min_dry_level):
-    self.msensor = msensor
+  def __init__(self, adc_channel, pump, meter, ideal_moisture_level, min_dry_level):
     self.pump = pump
+    self.adc_channel = adc_channel
     self.is_thirsty = False
     self.ideal_moisture_level = ideal_moisture_level
     self.min_dry_level = min_dry_level
@@ -22,7 +22,7 @@ class Controller:
     )
 
   def __check_moisture(self):
-    moisture_percentage, raw_reading = self.msensor.get_moisture_readings()
+    moisture_percentage, _ = ADCMsensor.get_adc_moisture_reading(self.adc_channel)
     #print(f"Moisture level: {moisture_percentage}\nRaw Reading: {raw_reading}")
     self.latest_moisture_reading = moisture_percentage
     return moisture_percentage
@@ -52,12 +52,12 @@ class Controller:
 
 def main():
   # Main loop
-  sensor1, sensor2 = Msensor(23), Msensor(14)
+  #sensor1, sensor2 = Msensor(23), Msensor(14)
   pump1, pump2 = WaterPumpRelay(24), WaterPumpRelay(15) #Relay in1 set to gpio22
   opentel = Opentel()
   meter1, meter2 = opentel.get_meter("plant1"), opentel.get_meter("plant2")
-  controller1 = Controller(sensor1, pump1, meter1, 90, 22)
-  controller2 = Controller(sensor2, pump2, meter2, 90, 22)
+  controller1 = Controller(0, pump1, meter1, 90, 22)
+  controller2 = Controller(1, pump2, meter2, 90, 22)
   
   while True:
     controller1.check_moisture()

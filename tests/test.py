@@ -1,13 +1,10 @@
-from pkg.moisture_sensor import Msensor
+from pkg.moisture_sensor import ADCMsensor
 from pkg.water_pump import WaterPumpRelay
 
 def main():
-  s = Msensor(23)
   pump = WaterPumpRelay(24)
-  
-  mp, raw = s.get_moisture_readings
+  mp, raw = ADCMsensor.get_adc_moisture_reading(0)
   print(f'MP: {mp}\nRAW: {raw}\n\n')
-  
   pump.release()
   
 

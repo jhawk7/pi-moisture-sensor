@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO #may need sudo apt-get -y install python-rpi.gpio
 import time
 
 GPIO.setmode(GPIO.BCM)

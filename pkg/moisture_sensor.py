@@ -1,31 +1,27 @@
-import RPi.GPIO as GPIO
-from smbus2 import SMBus
-import time
+import RPi.GPIO as GPIO #may need sudo apt-get -y install python-rpi.gpio
+import Adafruit_ADS1x15 #may need sudo apt-get install build-essential python-dev python-smbus python-pip
 
 VOLTAGE_AIR=50000 #voltage reading of sensor in air
 VOLTAGE_WATER=20500 #voltage reading of sensor in water
+I2C_ADDR = 49
+I2C_BUS = 1 #/i2c/dev/1
 
-class Msensor:
-  def __init__(self, pin):
-    self.min_moisture = VOLTAGE_AIR
-    self.max_moisture = VOLTAGE_WATER
-    GPIO.setup(pin, GPIO.IN)
-    self.mpin = pin
-    self.bus = SMBus(1) #for port 1 (/i2c/dev/1)
+class ADCMsensor:
+  min_moisture = VOLTAGE_AIR
+  max_moisture = VOLTAGE_WATER
+  adc = Adafruit_ADS1x15.ADS1115(address=I2C_ADDR, bus=I2C_BUS)
 
-  def get_i2c_reading(self):
-    #read 16 bytes from addr 0x49 with 0 offset
-    block = self.bus.read_i2c_block_data(49, 0, 16)
-    
-  def get_moisture_readings(self):
-    raw_reading = self.mpin.read_u16()
-    moisture_percentge = self.__map(raw_reading)
+  @classmethod
+  def get_adc_moisture_reading(cls, channel):
+    # get moisture percentage based on raw reading from specified ADC channel
+    raw_reading = cls.adc.read_adc(channel, gain=1)
+    moisture_percentge = cls.__map(raw_reading)
     return moisture_percentge, raw_reading
 
-  def __map(self, raw_reading):
+  def __map(cls, raw_reading):
     # maps reading to a range specified by the min and max (inspired by map arduino func)
     # formula: (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-    return (raw_reading - self.min_moisture) * (100-0) / (self.max_moisture - self.min_moisture) + 0
+    return (raw_reading - cls.min_moisture) * (100-0) / (cls.max_moisture - cls.min_moisture) + 0
 
 
 # s = Msensor(28)
