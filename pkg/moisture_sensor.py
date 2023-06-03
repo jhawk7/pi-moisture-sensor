@@ -1,4 +1,5 @@
-import machine
+import RPi.GPIO as GPIO
+from smbus2 import SMBus
 import time
 
 VOLTAGE_AIR=50000 #voltage reading of sensor in air
@@ -8,8 +9,14 @@ class Msensor:
   def __init__(self, pin):
     self.min_moisture = VOLTAGE_AIR
     self.max_moisture = VOLTAGE_WATER
-    self.mpin = machine.ADC(pin)
+    GPIO.setup(pin, GPIO.IN)
+    self.mpin = pin
+    self.bus = SMBus(1) #for port 1 (/i2c/dev/1)
 
+  def get_i2c_reading(self):
+    #read 16 bytes from addr 0x49 with 0 offset
+    block = self.bus.read_i2c_block_data(49, 0, 16)
+    
   def get_moisture_readings(self):
     raw_reading = self.mpin.read_u16()
     moisture_percentge = self.__map(raw_reading)

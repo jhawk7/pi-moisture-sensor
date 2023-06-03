@@ -1,12 +1,15 @@
-import machine
+import RPi.GPIO as GPIO
 import time
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
 class WaterPumpRelay:
   def __init__(self, pin):
-    self.pump_relay = machine.Pin(pin, machine.Pin.OUT)
+    GPIO.setup(pin, GPIO.OUT)
+    self.pump_relay = pin
 
   def release(self):
-    self.pump_relay.on()
+    GPIO.output(self.pump_relay, GPIO.HIGH)
     time.sleep(3)
-    self.pump_relay.off()
-
+    GPIO.output(self.pump_relay, GPIO.LOW)

@@ -52,8 +52,8 @@ class Controller:
 
 def main():
   # Main loop
-  sensor1, sensor2 = Msensor(23), Msensor(pin)
-  pump1, pump2 = WaterPumpRelay(24), WaterPumpRelay(pin) #Relay in1 set to gpio22
+  sensor1, sensor2 = Msensor(23), Msensor(14)
+  pump1, pump2 = WaterPumpRelay(24), WaterPumpRelay(15) #Relay in1 set to gpio22
   opentel = Opentel()
   meter1, meter2 = opentel.get_meter("plant1"), opentel.get_meter("plant2")
   controller1 = Controller(sensor1, pump1, meter1, 90, 22)

@@ -1,0 +1,11 @@
+services:
+  pi-garage-ctrl:
+    image: jhawk7/pi-irrigation-system
+    build: .
+    env_file:
+      - .env
+    restart: always
+    privileged: true
+    devices:
+      #mount i2c bus from pi for ADC 0x49
+      - "/dev/i2c-1:/dev/i2c-1"
