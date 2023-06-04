@@ -62,7 +62,8 @@ def main():
   while True:
     controller1.check_moisture()
     controller2.check_moisture()
-    time.sleep(3600)
+    #time.sleep(3600)
+    time.sleep(5)
 
 
 if __name__ == '__main__':
