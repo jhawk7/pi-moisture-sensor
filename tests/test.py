@@ -1,5 +1,5 @@
-from pkg.moisture_sensor import ADCMsensor
-from pkg.water_pump import WaterPumpRelay
+from ..pkg.moisture_sensor import ADCMsensor
+from ..pkg.water_pump import WaterPumpRelay
 
 def main():
   pump = WaterPumpRelay(24)
