@@ -1,5 +1,5 @@
 services:
-  pi-garage-ctrl:
+  pi-irrigation-system:
     image: jhawk7/pi-irrigation-system
     build: .
     env_file:
