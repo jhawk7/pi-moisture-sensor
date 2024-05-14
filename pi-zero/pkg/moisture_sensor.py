@@ -1,8 +1,8 @@
 import RPi.GPIO as GPIO #may need sudo apt-get -y install python-rpi.gpio
 import Adafruit_ADS1x15 #may need sudo apt-get install build-essential python-dev python-smbus python-pip
 
-VOLTAGE_AIR=50000 #voltage reading of sensor in air
-VOLTAGE_WATER=20500 #voltage reading of sensor in water
+VOLTAGE_AIR=13560 #voltage reading of sensor in air
+VOLTAGE_WATER=5868 #voltage reading of sensor in water
 I2C_ADDR = 49
 I2C_BUS = 1 #/i2c/dev/1
 
