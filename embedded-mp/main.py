@@ -7,8 +7,8 @@ from time import sleep
 
 sleep(2)
 LED = machine.Pin("LED", machine.Pin.OUT)
-VOLTAGE_AIR=13560 #voltage reading of sensor in air
-VOLTAGE_WATER=5868 #voltage reading of sensor in water
+VOLTAGE_AIR=49924 #voltage reading of sensor in air
+VOLTAGE_WATER=22305 #voltage reading of sensor in water
 IDEAL_MOISTURE_LEVEL=90
 MOISTURE_THRESHOLD=22
 
@@ -41,9 +41,9 @@ class mqttClient:
       print("connected to mqtt server")
       return client
   
-  def publish(self, moisture):
-    obj = {"plant-moisture": moisture}
-    obj["plant-status"] = "ok" if MOISTURE_THRESHOLD < moisture <= IDEAL_MOISTURE_LEVEL else "dry"
+  def publish(self, moisture, raw):
+    obj = {"plant-moisture": moisture, "raw-reading": raw}
+    obj["plant-status"] = "ok" if MOISTURE_THRESHOLD < moisture else "dry"
     obj["action"] = "alert" if obj["plant-status"] == "dry" else "log"
     msg = json.dumps(obj)
     self.client.publish(self.topic, msg)
@@ -76,7 +76,8 @@ def getReading(adc):
   # read moisture sensor
   # formula: (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
   raw = adc.read_u16()
-  return (raw - VOLTAGE_AIR) * (100-0) / (VOLTAGE_WATER - VOLTAGE_AIR) + 0
+  moisture = (raw - VOLTAGE_AIR) * (100-0) / (VOLTAGE_WATER - VOLTAGE_AIR) + 0
+  return raw, moisture
 
 
 def main():
@@ -88,8 +89,8 @@ def main():
 
   adc = machine.ADC(machine.Pin(26))
   while True:
-    moisture = getReading(adc)
-    cMQTT.publish(moisture)
+    raw, moisture = getReading(adc)
+    cMQTT.publish(moisture, raw)
     sleep(1800)
 
 
