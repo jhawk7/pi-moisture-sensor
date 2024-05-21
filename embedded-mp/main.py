@@ -45,6 +45,9 @@ class mqttClient:
     obj = {"plant-moisture": moisture, "raw-reading": raw}
     obj["plant-status"] = "ok" if MOISTURE_THRESHOLD < moisture else "dry"
     obj["action"] = "alert" if obj["plant-status"] == "dry" else "log"
+    if obj["action"] == "alert":
+      obj["alert-msg"] = "your plant needs watering"
+    
     msg = json.dumps(obj)
     self.client.publish(self.topic, msg)
     print(f"published values to topic {self.topic}")
