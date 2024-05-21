@@ -10,7 +10,7 @@ LED = machine.Pin("LED", machine.Pin.OUT)
 VOLTAGE_AIR=49924 #voltage reading of sensor in air
 VOLTAGE_WATER=22305 #voltage reading of sensor in water
 IDEAL_MOISTURE_LEVEL=90
-MOISTURE_THRESHOLD=22
+MOISTURE_THRESHOLD=15
 
 class mqttClient:
   def __init__(self):
@@ -109,7 +109,7 @@ def main():
     print("entering power saver mode..")
     cMQTT.disconnect()
     wconn.disconnect()
-    sleep(3600)
+    sleep(86400) # check daily
 
 
 if __name__ == "__main__":
