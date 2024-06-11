@@ -42,9 +42,10 @@ class mqttClient:
       return client
   
   def publish(self, moisture, raw):
-    obj = {"plant-moisture": moisture, "raw-reading": raw}
+    obj = {"plant-moisture": moisture, "raw-reading": raw, "plant-threshold": MOISTURE_THRESHOLD}
     obj["plant-status"] = "ok" if MOISTURE_THRESHOLD < moisture else "dry"
     obj["action"] = "alert" if obj["plant-status"] == "dry" else "log"
+    
     if obj["action"] == "alert":
       obj["alert-msg"] = "your plant needs watering"
     
