@@ -10,7 +10,7 @@ LED = machine.Pin("LED", machine.Pin.OUT)
 VOLTAGE_AIR=49924 #voltage reading of sensor in air
 VOLTAGE_WATER=22305 #voltage reading of sensor in water
 IDEAL_MOISTURE_LEVEL=90
-MOISTURE_THRESHOLD=15
+MOISTURE_THRESHOLD=20
 
 class mqttClient:
   def __init__(self):
