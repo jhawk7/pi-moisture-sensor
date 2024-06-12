@@ -47,7 +47,7 @@ class mqttClient:
     obj["action"] = "alert" if obj["plant-status"] == "dry" else "log"
     
     if obj["action"] == "alert":
-      obj["alert-msg"] = "your plant needs watering"
+      obj["alert-msg"] = "Water me! I'm dying!\n\nXOXO, Your house plant"
     
     msg = json.dumps(obj)
     self.client.publish(self.topic, msg)
