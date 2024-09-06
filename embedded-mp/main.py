@@ -12,7 +12,7 @@ VOLTAGE_WATER=22305 #voltage reading of sensor in water
 IDEAL_MOISTURE_LEVEL=90
 MOISTURE_THRESHOLD=20
 
-class mqttClient:
+class MqttClient:
   def __init__(self):
     client = self.__connectMQTT()
     self.client = client
@@ -58,7 +58,7 @@ class mqttClient:
     self.client.disconnect()
     
 
-class wifi:
+class Wifi:
   def __init__(self):
     self.wlan = self.__connectWifi()
     
@@ -103,10 +103,10 @@ def main():
   adc = machine.ADC(machine.Pin(26))
   while True:
     LED.value(True) # LED will be on until wifi is connected successfully
-    wconn = wifi()
+    wconn = Wifi()
     sleep(2)
     LED.value(True) # LED will remain on until mqtt is connected successfully
-    cMQTT = mqttClient()
+    cMQTT = MqttClient()
     raw, moisture = getReading(adc)
     cMQTT.publish(moisture, raw)
     sleep(2)
