@@ -2,6 +2,7 @@ import machine
 import network
 import config
 import json
+from datetime import datetime
 from mqtt.simple import MQTTClient, MQTTException
 from time import sleep
 
@@ -45,6 +46,7 @@ class MqttClient:
     obj = {"plant-moisture": moisture, "raw-reading": raw, "plant-threshold": MOISTURE_THRESHOLD}
     obj["plant-status"] = "ok" if MOISTURE_THRESHOLD < moisture else "dry"
     obj["action"] = "alert" if obj["plant-status"] == "dry" else "log"
+    obj["ts"] = datetime.now()
     
     if obj["action"] == "alert":
       obj["alert-msg"] = "Water me! I'm dying!\n\nXOXO, Your house plant"
@@ -113,7 +115,7 @@ def main():
     print("entering power saver mode..")
     cMQTT.disconnect()
     wconn.disconnect()
-    sleep(86400) # check daily
+    sleep(7200) # check every 2hrs
 
 
 if __name__ == "__main__":
