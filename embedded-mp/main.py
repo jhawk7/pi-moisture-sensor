@@ -50,7 +50,7 @@ class MqttClient:
       obj["alert-msg"] = "Water me! I'm dying!\n\nXOXO, Your house plant"
     
     msg = json.dumps(obj)
-    self.client.publish(self.topic, msg)
+    self.client.publish(self.topic, msg) #retain=False, qos=0 by default
     print(f"published values to topic {self.topic}")
   
   def disconnect(self):
