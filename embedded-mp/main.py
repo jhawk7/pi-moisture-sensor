@@ -113,7 +113,7 @@ def main():
     print("entering power saver mode..")
     cMQTT.disconnect()
     wconn.disconnect()
-    sleep(7200) # check every 2hrs
+    sleep(43200) # check twice daily
 
 
 if __name__ == "__main__":
