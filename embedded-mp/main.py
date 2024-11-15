@@ -70,7 +70,7 @@ class Wifi:
     sleep(3) # wait three seconds for the chip to power up and initialize
     wlan.connect(config.ENV["SSID"], config.ENV["WPASS"])
     print('Waiting for access point to log us in.')
-    sleep(2)
+    sleep(5)
     
     if wlan.isconnected():
       print('Success! We have connected to your access point!')
