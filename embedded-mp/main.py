@@ -15,10 +15,10 @@ MAX_RETRY=3
 
 class MqttClient:
   def __init__(self):
+    self.isConnected = False
     client = self.__connectMQTT()
     self.client = client
     self.topic = config.ENV["MQTT_TOPIC"]
-    self.isConnected = False
   
   def __connectMQTT(self, counter=1):
     client = MQTTClient(client_id=b"picow_thermo",
@@ -37,8 +37,9 @@ class MqttClient:
       sleep(1)
       LED.value(True)
       print("failed to connect to mqtt server")
-      counter += 1
       if counter != MAX_RETRY:
+        counter += 1
+        sleep(2)
         return self.__connectMQTT(counter) #retry
       
       LED.value(False)
@@ -98,7 +99,7 @@ class Wifi:
     else:
       LED.value(False)
       print('max wifi connect retries reached.. backing off')
-      return
+      return wlan
 
   def disconnect(self):
     print('disconnecting from wifi')
@@ -119,7 +120,7 @@ def main():
   while True:
     LED.value(True) # LED will be on until wifi is connected successfully
     wconn = Wifi()
-    if wconn.wlan.isconnected:
+    if wconn.wlan.isconnected():
       sleep(2)
       LED.value(True) # LED will remain on until mqtt is connected successfully
       cMQTT = MqttClient()
@@ -127,10 +128,10 @@ def main():
         raw, moisture = getReading(adc)
         cMQTT.publish(moisture, raw)
         sleep(2)
-        print("entering power saver mode..")
         cMQTT.disconnect()
         wconn.disconnect()
-
+        
+    print("entering power saver mode..")
     sleep(43200) # check twice daily
 
 
