@@ -71,7 +71,6 @@ class MqttClient:
 class Wifi:
   def __init__(self):
     self.wlan = self.__connectWifi()
-    self.isConnected = False
     
   def __connectWifi(self, counter=1):
     print('Connecting to WiFi Network Name:', config.ENV["SSID"])
@@ -87,7 +86,6 @@ class Wifi:
       print('Success! We have connected to your access point!')
       print('Try to ping the device at', wlan.ifconfig()[0])
       LED.value(False)
-      self.isConnected = True
       return wlan
     elif counter != MAX_RETRY:
       print('Failure! We have not connected to your access point!  Check your config file for errors.')
@@ -121,7 +119,7 @@ def main():
   while True:
     LED.value(True) # LED will be on until wifi is connected successfully
     wconn = Wifi()
-    if wconn.isConnected:
+    if wconn.wlan.isconnected:
       sleep(2)
       LED.value(True) # LED will remain on until mqtt is connected successfully
       cMQTT = MqttClient()
