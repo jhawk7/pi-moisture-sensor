@@ -5,28 +5,28 @@ import json
 from mqtt.simple import MQTTClient, MQTTException
 from time import sleep
 
-sleep(2)
+sleep(2) # wait for the system to stabilize
+print("Starting PicoW Moisture Sensor...")
 LED = machine.Pin("LED", machine.Pin.OUT)
 VOLTAGE_AIR=49924 #voltage reading of sensor in air
 VOLTAGE_WATER=22305 #voltage reading of sensor in water
 IDEAL_MOISTURE_LEVEL=90
 MOISTURE_THRESHOLD=20
-MAX_RETRY=3
+MAX_RETRIES=3
 
 class MqttClient:
   def __init__(self):
     self.isConnected = False
-    client = self.__connectMQTT()
-    self.client = client
     self.topic = config.ENV["MQTT_TOPIC"]
+    self.client = self.__connectMQTT()
   
   def __connectMQTT(self, counter=1):
-    client = MQTTClient(client_id=b"picow_thermo",
+    client = MQTTClient(client_id=b"picow_moisture_sensor",
       server = config.ENV["MQTT_SERVER"],
       port = 1883,
       user = config.ENV["MQTT_USER"],
       password = config.ENV["MQTT_PASS"],
-      keepalive=7000,
+      keepalive=10,
       ssl=False
     )
     
@@ -37,18 +37,20 @@ class MqttClient:
       sleep(1)
       LED.value(True)
       print("failed to connect to mqtt server")
-      if counter != MAX_RETRY:
+      if counter <= self.MAX_RETRIES:
         counter += 1
-        sleep(2)
+        sleep(1)
         return self.__connectMQTT(counter) #retry
-      
+
       LED.value(False)
-      print("max retries for mqtt reached.. backing off")
-      return
+      sleep(0.5)
+      doubleBlink()
+      print("max mqtt retries reached.. backing off")
+      return client
       
     else:
-      self.isConnected = True
       LED.value(False)
+      self.isConnected = True
       print("connected to mqtt server")
       return client
   
@@ -88,7 +90,7 @@ class Wifi:
       print('Try to ping the device at', wlan.ifconfig()[0])
       LED.value(False)
       return wlan
-    elif counter != MAX_RETRY:
+    elif counter <= MAX_RETRIES:
       print('Failure! We have not connected to your access point!  Check your config file for errors.')
       LED.value(False)
       counter +=1
@@ -98,6 +100,8 @@ class Wifi:
       return self.__connectWifi(counter) #retry
     else:
       LED.value(False)
+      sleep(0.5)
+      doubleBlink()
       print('max wifi connect retries reached.. backing off')
       return wlan
 
@@ -106,6 +110,14 @@ class Wifi:
     self.wlan.disconnect()
     self.wlan.active(False) #power down wlan chip
 
+def doubleBlink():
+  LED.value(True)
+  sleep(0.5)
+  LED.value(False)
+  sleep(0.5)
+  LED.value(True)
+  sleep(0.5)
+  LED.value(False)
 
 def getReading(adc):
   # read moisture sensor
